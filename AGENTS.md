@@ -49,6 +49,15 @@ Rules:
 - Avoid `cy.wait(XXXX)` unless justified; prefer state-based waits (`should`, `contains`, `intercept` + alias `wait`).
 - Keep tests **independent**: each spec prepares its own state.
 
+## Getting page context with Chrome DevTools
+
+When you need reliable selectors or you are debugging a failing test, use **Chrome DevTools** to capture the current page context before changing tests:
+
+- **Page snapshot (A11y tree)**: capture a snapshot to get a structured view of elements and their accessible names/roles (useful to craft stable `cy.findByRole`-style selectors or improve `cy.contains()` targets).
+- **Console**: check for errors/warnings that explain missing elements or blocked resources.
+- **Network**: verify login requests, redirects, and API responses; prefer waiting on `cy.intercept()` aliases instead of arbitrary `cy.wait()`.
+- **Elements panel**: confirm the app has stable `data-*` hooks; if not, propose adding `data-cy`/`data-testid` attributes in the app.
+
 ## Authentication (Cloudassistant)
 
 When implementing `cy.login()`:
