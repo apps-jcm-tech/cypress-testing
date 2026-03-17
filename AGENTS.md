@@ -62,3 +62,36 @@ When implementing `cy.login()`:
 - Prefer injecting secrets via CI runner environment variables instead of files.
 - Never commit `cypress.env.json` with secrets.
 
+## Cursor Cloud specific instructions
+
+### Service overview
+
+This repo is a **Cypress E2E test suite only** — there is no application to build or start. The system under test is **Cloudassistant**, an external web app accessed via `CLOUDASSISTANT_URL`.
+
+### Required secrets (injected as environment variables)
+
+| Variable | Purpose |
+|---|---|
+| `CLOUDASSISTANT_URL` | Base URL of the Cloudassistant instance |
+| `CLOUDASSISTANT_USER` | Login username |
+| `CLOUDASSISTANT_PASSWORD` | Login password |
+
+All three must be present before running tests.
+
+### Running tests
+
+- **Headless:** `npx cypress run --browser electron --config "baseUrl=$CLOUDASSISTANT_URL"`
+- **Interactive (headed):** `npx cypress open` (requires a display / Xvfb)
+- Pass credentials to specs via `setupNodeEvents` in `cypress.config.js` (see AGENTS.md § "How to consume them in Cypress").
+
+### Key gotcha: `allowCypressEnv: false`
+
+`cypress.config.js` sets `allowCypressEnv: false` (Cypress 15 default). This means:
+- The `--env` CLI flag and `Cypress.env()` are **disabled**.
+- Use `cy.env()` instead, and wire values through `config.env` inside `setupNodeEvents`.
+- For `baseUrl`, pass it via `--config baseUrl=<url>` which is unaffected by this setting.
+
+### No linter / no build
+
+There is no ESLint, Prettier, TypeScript, or build step configured. The only meaningful command to verify the project is `npx cypress verify` and running the test suite itself.
+
