@@ -59,18 +59,18 @@ describe("Login - Cloudassistant", () => {
     });
 
     it("muestra error con contraseña incorrecta", () => {
-      cy.env(["cloudassistantUser"]).then(({ cloudassistantUser: user }) => {
-        cy.origin(B2C_ORIGIN, { args: { user } }, ({ user }) => {
-          cy.get("#signInName").type(user);
-          cy.get("#password").type("contraseña_incorrecta", { log: false });
-          cy.get("#next").click();
+      const user = Cypress.env("cloudassistantUser");
 
-          cy.get(
-            '[aria-live="assertive"], #claimVerificationServerError, .error'
-          )
-            .should("be.visible")
-            .and("not.be.empty");
-        });
+      cy.origin(B2C_ORIGIN, { args: { user } }, ({ user }) => {
+        cy.get("#signInName").type(user);
+        cy.get("#password").type("contraseña_incorrecta", { log: false });
+        cy.get("#next").click();
+
+        cy.get(
+          '[aria-live="assertive"], #claimVerificationServerError, .error'
+        )
+          .should("be.visible")
+          .and("not.be.empty");
       });
     });
 
